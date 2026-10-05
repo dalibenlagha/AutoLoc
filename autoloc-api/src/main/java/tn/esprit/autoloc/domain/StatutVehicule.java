@@ -1,4 +1,4 @@
-package tn.esprit.autoloc.entities;
+package tn.esprit.autoloc.domain;
 
 public enum StatutVehicule {
     DISPONIBLE, LOUE, MAINTENANCE
