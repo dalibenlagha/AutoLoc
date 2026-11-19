@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.service.IVehiculeService;
+import tn.esprit.autoloc.web.dto.AffectationEquipementRequest;
+import tn.esprit.autoloc.web.dto.VehiculeDTO;
 
 @RestController
 @RequestMapping("/vehicules")
@@ -60,6 +63,16 @@ public class VehiculeController {
     public Vehicule update(@Parameter(description = "Identifiant") @PathVariable Long id,
                       @RequestBody Vehicule vehicule) {
         return vehiculeService.update(id, vehicule);
+    }
+
+    @Operation(summary = "Affecter un véhicule à un équipement")
+    @ApiResponse(responseCode = "200", description = "Équipement affecté au véhicule")
+    @ApiResponse(responseCode = "400", description = "Champs invalides (identifiant absent ou négatif)")
+    @ApiResponse(responseCode = "404", description = "Véhicule ou équipement introuvable")
+    @PutMapping("/affectation-equipement")
+    public VehiculeDTO affecterEquipement(@Valid @RequestBody AffectationEquipementRequest request) {
+        return VehiculeDTO.fromEntity(
+                vehiculeService.affecterEquipement(request.idVehicule(), request.idEquipement()));
     }
 
     @Operation(summary = "Supprimer un véhicule")
